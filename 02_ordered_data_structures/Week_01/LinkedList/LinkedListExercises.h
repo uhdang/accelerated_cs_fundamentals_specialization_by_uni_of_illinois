@@ -81,7 +81,64 @@
 template <typename T>
 void LinkedList<T>::insertOrdered(const T& newData) {
 
-  // -----------------------------------------------------------
+    // Make it on heap from new node
+    Node* newNode = new Node(newData);
+
+    // If empty, insert as the only item as both head and tail.
+    if (!head_) {
+        head_ = newNode;
+        tail_ = newNode;
+    } else {
+        Node *tmp;
+        // Starting with head_
+        tmp = head_;
+
+        // Traverse through LinkedList
+        while (tmp != NULL) {
+            if (tmp->prev == NULL && tmp->data > newNode->data) {
+                // tmp is the smallest
+                Node *after = tmp;
+
+                after->prev = newNode;
+
+                newNode->next = after;
+
+                head_ = newNode;
+
+            } else if (tmp->data < newNode->data && tmp->next == NULL) {
+                // Reached the end of linkedlist and newNode is the biggest
+                Node *before = tmp;
+
+                before->next = newNode;
+
+                newNode->prev = before;
+
+                tail_ = newNode;
+            } else if (tmp->prev != NULL && tmp->prev->data < newNode->data && tmp != NULL && tmp->data > newNode->data) {
+                // Element is in the middle
+                Node *before = tmp->prev;
+                Node *after = tmp;
+
+                before->next = newNode;
+                after->prev = newNode;
+
+                newNode->prev = before;
+                newNode->next = after;
+            }
+
+
+            if (newNode->prev != NULL || newNode->next != NULL) {
+                // if newNode has been inserted, no need for an iteration
+                break;
+            }
+            tmp = tmp->next;
+        }
+    }
+
+    size_++;
+
+
+    // -----------------------------------------------------------
   // TODO: Your code here!
   // -----------------------------------------------------------
   // Please implement this function according to the description
@@ -222,6 +279,39 @@ LinkedList<T> LinkedList<T>::merge(const LinkedList<T>& other) const {
   // the final result we want. This is what we will return at the end of
   // the function.
   LinkedList<T> merged;
+
+  Node *left_ptr = left.getHeadPtr();
+  Node *right_ptr = right.getHeadPtr();
+
+  if (left.empty()) {
+      merged = right;
+  } else if (right.empty()) {
+      merged = left;
+  } else {
+      while (left_ptr || right_ptr) {
+          if (!right_ptr) {
+              merged.pushBack(left_ptr->data);
+              left_ptr = left_ptr->next;
+          } else if (!left_ptr) {
+              merged.pushBack(right_ptr->data);
+              right_ptr = right_ptr->next;
+          } else {
+              if (left_ptr->data > right_ptr->data) {
+                  merged.pushBack(right_ptr->data);
+                  right_ptr = right_ptr->next;
+              } else if (right_ptr->data > left_ptr->data){
+                  merged.pushBack(left_ptr->data);
+                  left_ptr = left_ptr->next;
+              } else {
+                  // When the value is the same
+                  merged.pushBack(right_ptr->data);
+                  merged.pushBack(left_ptr->data);
+                  right_ptr = right_ptr->next;
+                  left_ptr = left_ptr->next;
+              }
+          }
+      }
+  }
 
   // -----------------------------------------------------------
   // TODO: Your code here!
