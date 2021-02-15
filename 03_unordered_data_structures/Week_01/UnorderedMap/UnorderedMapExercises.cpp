@@ -33,7 +33,7 @@
 //    using whatever form of iteration you choose. For each unique string,
 //    a key should be created in the StringIntMap.
 // 3. The StringIntMap type uses strings as keys, and these are mapped to int
-//    values. You should count the number of occurences of each unique string
+//    values. You should count the number of occurrences of each unique string
 //    found in the input, and that word count should be the value you assign
 //    to its corresponding key in the map.
 //
@@ -52,6 +52,14 @@
 // StringIntMap where each string is mapped to its number of occurences.
 StringIntMap makeWordCounts(const StringVec& words) {
   StringIntMap wordcount_map;
+
+  for (std::string word: words) {
+      if (wordcount_map.count(word)) {
+          wordcount_map[word]++;
+      } else {
+          wordcount_map[word] = 1;
+      }
+  }
 
   // =================================================
   // EXERCISE 1 WORKSPACE: YOUR CODE HERE
@@ -100,8 +108,10 @@ int lookupWithFallback(const StringIntMap& wordcount_map, const std::string& key
   // =================================================
   // EXERCISE 2 WORKSPACE: YOUR CODE HERE
   // =================================================
-
-  return -1337; // Change this!
+  if (wordcount_map.count(key) == 1) {
+      return wordcount_map.at(key);
+  }
+  return fallbackVal;
 }
 
 
@@ -204,7 +214,7 @@ int memoizedLongestPalindromeLength(LengthMemo& memo, const std::string& str, in
   // It returns 1 if found and otherwise 0. (These values convert to true and false.)
   // (It's important to not just use memo[pairKey] in this check, because that will
   //  create the entry with a default value if it doesn't already exist!)
-  if (memo.count(pairKey)) {
+  if (memo.count(pairKey) == 1) {
 
     // ====================================================================
     // EXERCISE 3 - PART A - YOUR CODE HERE!
@@ -214,7 +224,7 @@ int memoizedLongestPalindromeLength(LengthMemo& memo, const std::string& str, in
     // new in this case. So, we also won't store anything new in the table in
     // this case, only return what's already stored at this key in the map.
 
-    return -1337; // Hint: You need to change this!
+    return memo.at(pairKey); // Hint: You need to change this!
     // ====================================================================
 
   }
@@ -321,7 +331,8 @@ int memoizedLongestPalindromeLength(LengthMemo& memo, const std::string& str, in
   // =======================================================================
   // EXERCISE 3 - PART B - YOUR CODE HERE!
   //
-  return -1337; // Hint: You need to change this!
+  memo[pairKey] = greaterResult;
+  return greaterResult; // Hint: You need to change this!
   // =======================================================================
 }
 
